@@ -13,6 +13,7 @@ import { PatientsComponent } from './layouts/patients/patients.component';
 import { AuthGuard } from './services/auth.guard';
 import { TestingComponent } from './testing/testing.component';
 import { DoctorsComponent } from './layouts/doctors/doctors.component';
+import { MlComponent } from './ml/ml.component';
 
 const routes: Routes =[
     { path: 'home',             component: HomeComponent },
@@ -24,6 +25,7 @@ const routes: Routes =[
     { path: 'patients',          component: PatientsComponent, canActivate: [AuthGuard] },
     { path: 'doctors',          component: DoctorsComponent },
     { path: 'testing', component:TestingComponent},
+    { path: 'ml', component:MlComponent},
     { path: '', redirectTo: 'homepage', pathMatch: 'full' }
 ];
 

@@ -29,6 +29,7 @@ import { PatientsRoutingModule } from './layouts/patients/patients.routing';
 import { TestingComponent } from './testing/testing.component';
 import { CoreAuthService } from './core/core-auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MlComponent } from './ml/ml.component';
 
 var firebaseConfig = {
   apiKey: "AIzaSyB64pNbCqJSKksiZrEdNLCDwPkyP554HpU",
@@ -53,7 +54,8 @@ var firebaseConfig = {
     HomepageComponent,
     DoctorsComponent,
     PatientsComponent,
-    TestingComponent
+    TestingComponent,
+    MlComponent
   ],
   imports: [
     BrowserModule,
