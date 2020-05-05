@@ -19,6 +19,9 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { DoctorsComponent } from './layouts/doctors/doctors.component';
 import { PatientsComponent } from './layouts/patients/patients.component';
 
+
+import { AngularFirestore } from '@angular/fire/firestore';
+
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -30,6 +33,8 @@ import { TestingComponent } from './testing/testing.component';
 import { CoreAuthService } from './core/core-auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MlComponent } from './ml/ml.component';
+// import { FirebaseListObservable } from '@angular/fire/database';
+
 
 var firebaseConfig = {
   apiKey: "AIzaSyB64pNbCqJSKksiZrEdNLCDwPkyP554HpU",
@@ -66,7 +71,7 @@ var firebaseConfig = {
     HomeModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
-    AngularFirestoreModule,
+    AngularFirestoreModule.enablePersistence(),
     CoreModule,
     PatientsRoutingModule,
     ReactiveFormsModule
