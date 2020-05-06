@@ -62,6 +62,21 @@ export class MlComponent implements OnInit {
     // })
   }
 
+  delete(itemId){
+    // console.log(item);
+    this.mlservice.deleteUser(itemId)
+    .then(
+      res => {
+            console.log("successfully deleted!");
+
+        // this.router.navigate(['/home']);
+      },
+      // err => {
+      //   console.log(err);
+      // }
+    )
+  }
+
   addList(item) {
     console.log(item);
     var temp = item.toString();

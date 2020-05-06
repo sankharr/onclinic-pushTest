@@ -11,6 +11,10 @@ export class MlService {
     private db:AngularFirestore
   ) { }
 
+  deleteUser(userKey){
+    return this.db.collection('Symptoms').doc(userKey).delete();
+  }
+
   getUsers(){
     return this.db.collection('Symptoms').snapshotChanges();
   }
