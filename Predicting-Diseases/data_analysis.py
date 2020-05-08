@@ -106,6 +106,7 @@ df_pivoted.to_csv("Scraped-Data/df_pivoted.csv")
 
 x = df_pivoted[cols]
 y = df_pivoted['Source']
+
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=42)
 mnb = MultinomialNB()
 mnb = mnb.fit(x_train, y_train)
@@ -121,6 +122,9 @@ clf_dt=dt.fit(x,y)
 print ("Acurracy: ", clf_dt.score(x,y))
 pickle.dump(dt, open('Models/model.pkl','wb'))
 model = pickle.load(open('Models/model.pkl','rb'))
+export_graphviz(dt, 
+                out_file='DOT-files/tree.dot', 
+                feature_names=cols)
 ##############################################################################
 data = pd.read_csv("Manual-Data/Training.csv")
 df = pd.DataFrame(data)
@@ -141,13 +145,20 @@ testy = test_data['prognosis']
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=42)
 dt = DecisionTreeClassifier()
 clf_dt=dt.fit(x_train,y_train)
-pickle.dump(dt, open('Models/model_decisiontree.pkl','wb'))
-model_decisiontree = pickle.load(open('Models/model_decisiontree.pkl','rb'))
+export_graphviz(dt, 
+                out_file='DOT-files/tree.dot', 
+                feature_names=cols)
 ##############################################################################
 importances = dt.feature_importances_
 indices = np.argsort(importances)[::-1]
 features = cols
-
+export_graphviz(dt, 
+                out_file='DOT-files/tree-top5.dot', 
+                feature_names=cols,
+                max_depth = 5
+               )
+pickle.dump(dt, open('Models/model_decisiontree.pkl','wb'))
+model_decisiontree = pickle.load(open('Models/model_decisiontree.pkl','rb'))
 feature_dict = {}
 for i,f in enumerate(features):
     feature_dict[f] = i
@@ -155,14 +166,7 @@ sample_x = [i/52 if i ==52 else i*0 for i in range(len(features))]
 
 sample_x = np.array(sample_x).reshape(1,len(sample_x))
 
-export_graphviz(dt, 
-                out_file='DOT-files/tree.dot', 
-                feature_names=cols)
-export_graphviz(dt, 
-                out_file='DOT-files/tree-top5.dot', 
-                feature_names=cols,
-                max_depth = 5
-               )
+
 
 
 
