@@ -19,7 +19,7 @@ with open('api.csv', newline='') as f:
 
 #print(data.values())
 app = Flask(__name__)
-model = pickle.load(open('../Models/model_decisiontree.pkl','rb'))
+model = pickle.load(open('../Models/newTrained/model_decisiontree.pkl','rb'))
 df = pd.read_csv('mostImportant.csv')
 dict_ = dict(zip(df.Date, df.DateValue))
 
