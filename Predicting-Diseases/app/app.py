@@ -19,7 +19,7 @@ with open('api.csv', newline='') as f:
 
 #print(data.values())
 app = Flask(__name__)
-model = pickle.load(open('../Models/newTrained/model_decisiontree.pkl','rb'))
+model = pickle.load(open('../KNN model/model.pkl','rb'))
 df = pd.read_csv('mostImportant.csv')
 dict_ = dict(zip(df.Date, df.DateValue))
 
@@ -31,8 +31,8 @@ def predict():
     # print(symptom)
     for i in range(len(symptom)):
         data[symptom[i]] = 1
-    #features = data.values()
-    #print(features)
+    features = data.values()
+    print(features)
     vals = np.fromiter(data.values(), dtype=float)
     disease = model.predict([vals])
     # print(disease)
