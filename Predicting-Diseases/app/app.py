@@ -64,14 +64,16 @@ def disease():
 @app.route('/api/doctor_verification',methods=["POST"])
 def doctor_verification():
     data = request.get_json()
-    print(data)
+    # print(data)
     # print(data[1])
     uid = data[1]
-    print(uid)
+    # print(uid)
     data = data[0]
     reg_no = str(data['docID'])
     act_no = str(data['age'])
-    FullName = data['name']
+    FullName = str(data['name'])
+    # print(FullName)
+    # FullName = FullName.split(" ","")
     # id = request.args.get('id')
     # print(id)
     # print('Im here')
@@ -80,6 +82,7 @@ def doctor_verification():
     try:
         my_url = 'https://www.srilankamedicalcouncil.org/registry.php?registry='+(act_no)+'&initials=&last_name=&other_name=&reg_no='+(reg_no)+'&nic=&part_of_address=&search=Search'
         uCLient = uReq(my_url)
+        # print(my_url)
         page_html = uCLient.read()
         uCLient.close()    
         # data = []
@@ -90,13 +93,26 @@ def doctor_verification():
         for row in rows:
             cells = row.findAll('td')
             cells = [ele.text.strip() for ele in cells]
+        name_web = cells[3].replace(" ","")##secondly added
         # print(cells)
-        if (FullName==cells[3]):
-            # return jsonify(True)
+        # print(cells)
+        # print(cells[3])
+        FullName2 = FullName.strip()
+        docName = FullName2.replace(" ","")##also
+        # print(len(FullName2))
+        # print(len(cells[3]))
+        # print()
+        print(docName,name_web)
+
+        if(docName==name_web):
             return updateFlag(uid)
-            # return sendTextMessage(FullName,cells[4])
+        # if (FullName2==cells[3]):
+        #     # return jsonify(True)
+        #     return updateFlag(uid)
+        #     # return sendTextMessage(FullName,cells[4])
         else:
             return jsonify(cells[3])
+        return jsonify(cells)
     except:
         # print('No data')
         failed = "No Doctor data associated with this credintials"
@@ -118,7 +134,7 @@ def updateFlag(id):
     user_ref = db.collection(u'Users').document(id)
 
 # Set the capital field
-    city_ref.update({u'slmcVerified': True})
+    user_ref.update({u'slmcVerified': True})
     return jsonify(True)
   
 
