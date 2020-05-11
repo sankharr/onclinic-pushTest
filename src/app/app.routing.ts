@@ -1,3 +1,4 @@
+import { DoctorverificationComponent } from './doctorverification/doctorverification.component';
 import { NgModule } from '@angular/core';
 import { CommonModule, } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
@@ -11,6 +12,7 @@ import { LoginComponent } from './login/login.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { PatientsComponent } from './layouts/patients/patients.component';
 import { AuthGuard } from './services/auth.guard';
+import { ModeratorComponent } from './moderator/moderator.component';
 import { TestingComponent } from './testing/testing.component';
 import { DoctorsComponent } from './layouts/doctors/doctors.component';
 import { MlComponent } from './ml/ml.component';
@@ -28,6 +30,8 @@ const routes: Routes = [
   { path: 'testing', component: TestingComponent },
   { path: 'ml', component: MlComponent },
   { path: 'disease', component: DiseaseComponent },
+  { path: 'moderator', component:ModeratorComponent},
+  { path: 'doctorverification',component:DoctorverificationComponent},
   { path: '', redirectTo: 'homepage', pathMatch: 'full' }
 ];
 

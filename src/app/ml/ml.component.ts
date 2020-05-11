@@ -52,6 +52,7 @@ export class MlComponent implements OnInit {
         this.name_filtered_items = result;
       })
 
+      
 
     // this.getallclubs().subscribe((clubs) => {
     //   this.allclubs = clubs;

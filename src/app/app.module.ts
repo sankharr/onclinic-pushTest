@@ -36,6 +36,8 @@ import { CoreAuthService } from './core/core-auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MlComponent } from './ml/ml.component';
 import { DiseaseComponent } from './disease/disease.component';
+import { ModeratorComponent } from './moderator/moderator.component';
+import { DoctorverificationComponent } from './doctorverification/doctorverification.component';
 // import { FirebaseListObservable } from '@angular/fire/database';
 
 
@@ -64,7 +66,9 @@ var firebaseConfig = {
     PatientsComponent,
     TestingComponent,
     MlComponent,
-    DiseaseComponent
+    DiseaseComponent,
+    ModeratorComponent,
+    DoctorverificationComponent
   ],
   imports: [
     BrowserModule,
