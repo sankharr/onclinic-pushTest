@@ -4,8 +4,11 @@ Created on Tue May  5 20:24:21 2020
 
 @author: 94712
 """
-
-
+import smtplib, ssl
+from random import randint
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+# mail
 import numpy as np
 import bs4
 import selenium.webdriver as selenium
@@ -51,6 +54,36 @@ def predict():
     disease = model.predict([vals])
     # print(disease)
     return jsonify(disease[0])
+@app.route('/api/email',methods=['POST'])
+def sendEmail():
+    data = request.get_json()
+    uid = data[1]
+    data = data[0]
+    email = (data['email'])
+    smtp_server = "smtp.gmail.com"
+    port = 587  # For starttls
+    sender_email = "ransakaravi@gmail.com"
+    password = 'qchaos@123'
+    receiver_email = email
+    OTP = randint(1000, 9999)
+    message = "hi " + data['name'] + "Thank you for registering with Onclinic.Use "+OTP+ "to complete your registration.\n Thank you!"
+    context = ssl.create_default_context()
+
+    try:
+        server = smtplib.SMTP(smtp_server,port)
+        server.ehlo() # Can be omitted
+        server.starttls(context=context) # Secure the connection
+        server.ehlo() # Can be omitted
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message)
+        return addOTP(uid,OTP)
+    except Exception as e:
+        # Print any error messages to stdout
+        print(e)
+        return jsonify(False)
+    finally:
+        server.quit()
+        # return ()
 
 @app.route('/api/disease',methods=["POST"])
 def disease():
@@ -72,13 +105,8 @@ def doctor_verification():
     reg_no = str(data['docID'])
     act_no = str(data['age'])
     FullName = str(data['name'])
-    # print(FullName)
-    # FullName = FullName.split(" ","")
-    # id = request.args.get('id')
-    # print(id)
-    # print('Im here')
+    email = str(data['email'])
 
-    # print(type(reg_no))
     try:
         my_url = 'https://www.srilankamedicalcouncil.org/registry.php?registry='+(act_no)+'&initials=&last_name=&other_name=&reg_no='+(reg_no)+'&nic=&part_of_address=&search=Search'
         uCLient = uReq(my_url)
@@ -89,34 +117,26 @@ def doctor_verification():
         page_soup = soup(page_html,"html.parser")
         table = page_soup.find(lambda tag: tag.name=='table' and tag.has_attr('id') and tag['id']=="r_table") 
         rows = table.findAll(lambda tag: tag.name=='tr')
-        #general_text_container = page_soup.findAll("tbody",{"tr":"tr0"})
         for row in rows:
             cells = row.findAll('td')
             cells = [ele.text.strip() for ele in cells]
-        name_web = cells[3].replace(" ","")##secondly added
-        # print(cells)
-        # print(cells)
-        # print(cells[3])
+        name_web = cells[3].replace(" ","")
         FullName2 = FullName.strip()
-        docName = FullName2.replace(" ","")##also
-        # print(len(FullName2))
-        # print(len(cells[3]))
-        # print()
+        docName = FullName2.replace(" ","")
+
         print(docName,name_web)
 
         if(docName==name_web):
-            return updateFlag(uid)
-        # if (FullName2==cells[3]):
-        #     # return jsonify(True)
-        #     return updateFlag(uid)
-        #     # return sendTextMessage(FullName,cells[4])
+            status = "valid doctor"
+            return updateFlag(email,FullName, uid,True,status)
+
         else:
-            return jsonify(cells[3])
-        return jsonify(cells)
+            status = 'invalid doctor'
+            return updateFlag(email,FullName,uid,False,status)
+        # return jsonify(cells)
     except:
-        # print('No data')
-        failed = "No Doctor data associated with this credintials"
-        return jsonify(failed)
+        status = "No Doctor data associated with this credintials"
+        return updateFlag(email,FullName,uid,False,status)
 
 def sendTextMessage(FullName,address):
     client = Client("AC8cb4a76d6dcdbb9a29cb5a9cf59a3110", "91774c5f46c2b8d11300d4f1b3432f5f")
@@ -125,18 +145,22 @@ def sendTextMessage(FullName,address):
                        body=("Hello "+ FullName +" We verified your account.We will send verification code to your address:\n"+address+"\nThanks for using Onclinic"))
     return "Message Sent!"
 
-def updateFlag(id):
-#     doc_ref = db.collection(u'Users').document(id)
-#     doc_ref.set({
-#     u'slmcVerified': True
-# })
-#     print(id)
+def updateFlag(email,name,id,flag,status):
     user_ref = db.collection(u'Users').document(id)
+    user_ref.update({u'slmcVerified': flag})
+    # dody = [flag,ststus]
+    return jsonify(email,name,status)
 
-# Set the capital field
-    user_ref.update({u'slmcVerified': True})
-    return jsonify(True)
-  
+def addOTP(id,OTP):
+    user_ref = db.collection(u'Users').document(id)
+    user_ref.update({u'OTP': OTP})
+    return jsonify(OTP,True)
+
+def emailVerified(id):
+    user_ref = db.collection(u'Users').document(id)
+    user_ref.update({u'emailVerified': True})
+
+
 
 
 if __name__ == "__main__":
