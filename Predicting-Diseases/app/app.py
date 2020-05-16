@@ -57,6 +57,7 @@ def predict():
 @app.route('/api/email',methods=['POST'])
 def sendEmail():
     data = request.get_json()
+    print(data)
     uid = data[1]
     data = data[0]
     email = (data['email'])
@@ -66,7 +67,7 @@ def sendEmail():
     password = 'qchaos@123'
     receiver_email = email
     OTP = randint(1000, 9999)
-    message = "hi " + data['name'] + "Thank you for registering with Onclinic.Use "+OTP+ "to complete your registration.\n Thank you!"
+    message = "OTP"
     context = ssl.create_default_context()
 
     try:
