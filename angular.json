@@ -24,9 +24,14 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/assets/scss/argon.scss"
+              "src/assets/scss/argon.scss",
+              
+              "src/assets/js/custom.js"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "src/assets/js/custom.js"
+            ]
           },
           "configurations": {
             "production": {

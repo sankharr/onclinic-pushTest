@@ -140,10 +140,10 @@ export class AuthService {
               console.log("role - ", this.role);
 
               if (this.role == "patient") {
-                this.router.navigate(['/patients']);
+                this.router.navigate(['/patientdashboard']);
               }
               if (this.role == "doctor") {
-                this.router.navigate(['/doctors']);
+                this.router.navigate(['/doctordashboard']);
               }
             })
         }
@@ -155,7 +155,7 @@ export class AuthService {
     this.afAuth.createUserWithEmailAndPassword(user.email, user.password)
       .then(userCredential => {
         this.newUser = user;
-        console.log(userCredential)
+        console.log(user)
         userCredential.user.updateProfile({
           displayName: user.name  //you can add a photo url as well here
 
@@ -171,7 +171,7 @@ export class AuthService {
         if (role == "doctor") {
           this.insertDoctorData(userCredential)
             .then(() => {
-              this.router.navigate(['/doctor']);
+              this.router.navigate(['/doctorverification']);
             });
         }
 
