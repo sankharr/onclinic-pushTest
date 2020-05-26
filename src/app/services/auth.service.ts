@@ -140,10 +140,10 @@ export class AuthService {
               console.log("role - ", this.role);
 
               if (this.role == "patient") {
-                this.router.navigate(['/patients']);
+                this.router.navigate(['/patientdashboard']);
               }
               if (this.role == "doctor") {
-                this.router.navigate(['/doctors']);
+                this.router.navigate(['/doctordashboard']);
               }
             })
         }

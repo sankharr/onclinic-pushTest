@@ -38,6 +38,8 @@ import { MlComponent } from './ml/ml.component';
 import { DiseaseComponent } from './disease/disease.component';
 import { ModeratorComponent } from './moderator/moderator.component';
 import { DoctorverificationComponent } from './doctorverification/doctorverification.component';
+import { DashboardComponent } from './doctor/dashboard/dashboard.component';
+import { PatientDashboardComponent } from './patient/patient-dashboard/patient-dashboard.component';
 // import { FirebaseListObservable } from '@angular/fire/database';
 
 
@@ -68,7 +70,9 @@ var firebaseConfig = {
     MlComponent,
     DiseaseComponent,
     ModeratorComponent,
-    DoctorverificationComponent
+    DoctorverificationComponent,
+    DashboardComponent,
+    PatientDashboardComponent
   ],
   imports: [
     BrowserModule,

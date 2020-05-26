@@ -76,4 +76,19 @@
       opacity: 0;
     }
   }
+
+  /* #panel, #flip {
+    padding: 5px;
+    text-align: center;
+    background-color: #330249;
+    border: solid 1px #740a0a;
+  } */
   
+  #panel {
+    /* padding: 50px; */
+    display: none;
+  }
+  
+  .alert-danger{
+    transform: translateX(20px);
+  }
