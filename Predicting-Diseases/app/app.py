@@ -4,6 +4,12 @@ Created on Tue May  5 20:24:21 2020
 
 @author: Ransaka
 """
+
+# 
+import firebase_admin
+from firebase_admin import credentials, firestore, storage
+
+# 
 import smtplib, ssl
 from random import randint
 from email.mime.text import MIMEText
@@ -208,8 +214,8 @@ def sendTextMessage(PhoneNumber,uid):
     user_ref.update({u'PhoneNumberOtp': phoneOtp})
     client = boto3.client(
         "sns",
-        aws_access_key_id = "AKIA3CIKYW7QFTVFSOGS",
-        aws_secret_access_key = "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",
+        aws_access_key_id = "XXXXXXXXXXXXXXXXXXXXX",
+        aws_secret_access_key = "XXXXXXXXXXXXXXX",
         region_name = "eu-west-1"
     )
     client.publish(
@@ -230,6 +236,18 @@ def addOTP(id,OTP):
     user_ref.update({u'emailOtp': OTP})
     user_ref.update({u'emailVerified':False})
     return jsonify(OTP,True)
+
+def uploadFIle():
+    cred = credentials.Certificate("./onclinic-dd11a-firebase-adminsdk-g3ixz-639c96122f.json")
+    firebase_admin.initialize_app(cred, {
+    'storageBucket': 'onclinic-dd11a.appspot.com'
+    })
+    db = firestore.client()
+    bucket = storage.bucket()
+    blob = bucket.blob('file.pdf')
+    outfile='./file.pdf'
+    blob.upload_from_filename(outfile)
+
 
 
 

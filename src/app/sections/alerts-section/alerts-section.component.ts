@@ -25,7 +25,7 @@ export class AlertsSectionComponent {
           message: 'This is a success alert—check it out!',
           icon: 'ni ni-like-2'
       }, {
-          id: 2,
+          id: 2, 
           strong: 'Info!',
           type: 'info',
           message: 'This is an info alert—check it out!',
@@ -45,6 +45,10 @@ export class AlertsSectionComponent {
       });
       this.backup = this.alerts.map((alert: IAlert) => Object.assign({}, alert));
   }
+
+//  setTimeout(function(){
+//     this.close();
+// },5000)
 
   close(alert: IAlert) {
     this.alerts.splice(this.alerts.indexOf(alert), 1);
