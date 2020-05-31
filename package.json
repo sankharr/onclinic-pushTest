@@ -28,6 +28,7 @@
     "chart.js": "^2.9.3",
     "chartjs": "^0.3.24",
     "firebase": "^7.14.2",
+    "jquery": "^3.5.1",
     "jw-bootstrap-switch-ng2": "2.0.5",
     "moment": "^2.24.0",
     "ng2-nouislider": "1.7.13",
@@ -38,7 +39,7 @@
     "zone.js": "0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "0.900.5",
+    "@angular-devkit/build-angular": "^0.901.7",
     "@angular/cli": "9.0.5",
     "@angular/compiler-cli": "9.0.5",
     "@angular/language-service": "9.0.5",

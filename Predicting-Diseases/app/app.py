@@ -2,23 +2,27 @@
 """
 Created on Tue May  5 20:24:21 2020
 
-@author: 94712
+@author: Ransaka
 """
 import smtplib, ssl
 from random import randint
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+# from random import randint
 # mail
 import numpy as np
+import urllib
 import bs4
-import selenium.webdriver as selenium
+# import selenium.webdriver as selenium
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 import pandas as pd
 from flask import Flask, request, jsonify, render_template
 import pickle
 import csv
-from twilio.rest import Client
+#from twilio.rest import Client
+import boto3
+
 from firebase import firebase
 import firebase_admin
 from firebase_admin import credentials
@@ -54,21 +58,48 @@ def predict():
     disease = model.predict([vals])
     # print(disease)
     return jsonify(disease[0])
+
 @app.route('/api/email',methods=['POST'])
 def sendEmail():
     data = request.get_json()
-    print(data)
+    # print(data)
     uid = data[1]
     data = data[0]
-    email = (data['email'])
+    email = (data[1])
     smtp_server = "smtp.gmail.com"
     port = 587  # For starttls
     sender_email = "ransakaravi@gmail.com"
     password = 'qchaos@123'
     receiver_email = email
-    OTP = randint(1000, 9999)
-    message = "OTP"
+    OTP = data[0]
+    url = "http://127.0.0.1:4200/emailverify?key="+uid+"&secret="+OTP
+    print(url)
+    # args = {"key": uid, "secret": OTP}
+     # OTP
+    # url = "http://127.0.0.1:4200/emailverify/?{}".format(urllib.parse.urlencode(args))
+    # print(url)
+    msg = MIMEMultipart('alternative')
+    text = url
+    html = """\
+    <html>
+      <head></head>
+      <body>
+        <p>Hi!<br>
+           How are you?<br>
+           Here is the <a href="{url}">link</a> you wanted.
+        </p>
+      </body>
+    </html>
+    """.format(url=url)
+    part1 = MIMEText(text, 'plain')
+    part2 = MIMEText(html, 'html')
+    msg.attach(part1)
+    msg.attach(part2)
+
+    # message = "OTP"
     context = ssl.create_default_context()
+
+    # return jsonify(email,uid,OTP)
 
     try:
         server = smtplib.SMTP(smtp_server,port)
@@ -76,7 +107,7 @@ def sendEmail():
         server.starttls(context=context) # Secure the connection
         server.ehlo() # Can be omitted
         server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, message)
+        server.sendmail(sender_email, receiver_email, msg.as_string())
         return addOTP(uid,OTP)
     except Exception as e:
         # Print any error messages to stdout
@@ -94,6 +125,36 @@ def disease():
     symptoms = dict_[str_disease]
     symptoms = symptoms.split(',')
     return jsonify(symptoms)
+
+@app.route('/api/emailverify',methods=["POST"])
+def emailverify():
+    data = request.get_json()
+    print(data)
+    uid = str(data[0])
+    code = data[1]
+    doc_ref = db.collection(u'Users').document(uid)
+    doc = doc_ref.get()
+    # print(doc.to_dict)
+    if doc.exists:
+        data = ((doc.to_dict()))
+        # print(type(data))
+        otp = data['emailOtp']
+        if verifyOtp(code,otp):
+            return sendTextMessage(data['telno'],uid)
+        else:
+            status = "Invalid otp"
+            return jsonify(ststus)
+    else:
+        return jsonify('No such document!')
+    # user_ref = db.collection(u'Users').document(id)
+    # user_ref.update({u'emailVerified': True})
+
+def verifyOtp(otp,code):
+    if(otp==code):
+        return True
+    else:
+        return False
+
 
 @app.route('/api/doctor_verification',methods=["POST"])
 def doctor_verification():
@@ -139,12 +200,24 @@ def doctor_verification():
         status = "No Doctor data associated with this credintials"
         return updateFlag(email,FullName,uid,False,status)
 
-def sendTextMessage(FullName,address):
-    client = Client("AC8cb4a76d6dcdbb9a29cb5a9cf59a3110", "91774c5f46c2b8d11300d4f1b3432f5f")
-    client.messages.create(to="+940712816739", 
-                       from_="+12724222837", 
-                       body=("Hello "+ FullName +" We verified your account.We will send verification code to your address:\n"+address+"\nThanks for using Onclinic"))
-    return "Message Sent!"
+def sendTextMessage(PhoneNumber,uid):
+    phoneOtp = randint(1000, 99999)
+    user_ref = db.collection(u'Users').document(uid)
+    user_ref.update({u'PhoneNumberVerified': False})
+    user_ref.update({u'emailVerified':True})
+    user_ref.update({u'PhoneNumberOtp': phoneOtp})
+    client = boto3.client(
+        "sns",
+        aws_access_key_id = "AKIA3CIKYW7QFTVFSOGS",
+        aws_secret_access_key = "Ei9mqwRpeT/ww9GO9Bhcuhrxe5ILUlO6zfwk9UaQ",
+        region_name = "eu-west-1"
+    )
+    client.publish(
+        PhoneNumber = PhoneNumber,
+        # code = "Your OTP is"+ phoneOtp
+        Message = "Your OTP: "+str(phoneOtp)
+    )
+    return jsonify("Phone Verification sent")
 
 def updateFlag(email,name,id,flag,status):
     user_ref = db.collection(u'Users').document(id)
@@ -154,12 +227,9 @@ def updateFlag(email,name,id,flag,status):
 
 def addOTP(id,OTP):
     user_ref = db.collection(u'Users').document(id)
-    user_ref.update({u'OTP': OTP})
+    user_ref.update({u'emailOtp': OTP})
+    user_ref.update({u'emailVerified':False})
     return jsonify(OTP,True)
-
-def emailVerified(id):
-    user_ref = db.collection(u'Users').document(id)
-    user_ref.update({u'emailVerified': True})
 
 
 
