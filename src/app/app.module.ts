@@ -40,6 +40,7 @@ import { ModeratorComponent } from './moderator/moderator.component';
 import { DoctorverificationComponent } from './doctorverification/doctorverification.component';
 import { DashboardComponent } from './doctor/dashboard/dashboard.component';
 import { PatientDashboardComponent } from './patient/patient-dashboard/patient-dashboard.component';
+import { MailVerificationComponent } from './mail-verification/mail-verification.component';
 // import { FirebaseListObservable } from '@angular/fire/database';
 
 
@@ -72,7 +73,8 @@ var firebaseConfig = {
     ModeratorComponent,
     DoctorverificationComponent,
     DashboardComponent,
-    PatientDashboardComponent
+    PatientDashboardComponent,
+    MailVerificationComponent
   ],
   imports: [
     BrowserModule,

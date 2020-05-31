@@ -3,7 +3,7 @@
         <!-- Hero for FREE version -->
         <section class="section section-lg section-hero section-shaped">
             <!-- Background circles -->
-            <div class="shape shape-style-1 shape-primary">
+            <div class="shape shape-style-1 shape-primary"> 
                 <span class="span-150"></span>
                 <span class="span-50"></span>
                 <span class="span-50"></span>
@@ -27,11 +27,11 @@
                             <div *ngIf="user?.displayName; then authenticated else guest">
                             </div>
 
-                            <ng-template #guest>
+                            <!-- <ng-template #guest>
                                 <h3>Yo Doca</h3>
-                            </ng-template>
+                            </ng-template> -->
                             <div class="lds-spinner" *ngIf="!data">
-                                <div></div>
+                                <div></div> 
                                 <div></div>
                                 <div></div>
                                 <div></div>
@@ -45,7 +45,7 @@
                                 <div></div>
                             </div>
 
-                            <div class="container2" *ngIf="data && !mailFlag">
+                            <div class="container2" *ngIf="data && !mailFlag" id="slmcok_div">
                                 <div class="alert alert-success" role="alert" *ngIf="data.slmcVerified">
                                     <h4 class="alert-heading">Account Successfully Verified by SLMC</h4>
                                     <p>Your account Successfully verified we will send verification code via post</p>
@@ -60,7 +60,7 @@
                                             aria-label="Username" aria-describedby="basic-addon1" value={{data.email}}
                                             disabled>
                                     </div>
-                                    <button class="btn btn-primary" (click)="[jquery(),sendEmail()]">Continue</button>
+                                    <button class="btn btn-primary" (click)="[sendEmail()]" id="slmcok">Continue</button>
 
                                 </div>
                                 

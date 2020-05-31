@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeComponent } from './home/home.component';
+import {MailVerificationComponent} from './mail-verification/mail-verification.component'
 import { ProfileComponent } from './profile/profile.component';
 import { SignupComponent } from './signup/signup.component';
 import {DashboardComponent} from './doctor/dashboard/dashboard.component';
@@ -34,8 +35,9 @@ const routes: Routes = [
   { path: 'disease', component: DiseaseComponent },
   { path: 'moderator', component:ModeratorComponent},
   { path: 'doctorverification',component:DoctorverificationComponent},
-  {path: 'doctordashboard',component:DashboardComponent},
-  {path: 'patientdashboard',component:PatientDashboardComponent},
+  { path: 'doctordashboard',component:DashboardComponent},
+  { path: 'patientdashboard',component:PatientDashboardComponent},
+  { path: 'emailverify',component:MailVerificationComponent},
   { path: '', redirectTo: 'homepage', pathMatch: 'full' }
 ];
 
