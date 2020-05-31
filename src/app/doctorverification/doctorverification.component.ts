@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { CoreAuthService } from '../core/core-auth.service';
 import { AngularFirestore } from '@angular/fire/firestore';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-doctorverification',
@@ -34,7 +35,7 @@ export class DoctorverificationComponent implements OnInit {
         .subscribe(result => {
           this.data = result;
           this.verifyDoctor()
-          console.log(this.data.slmcVerified)
+          console.log(this.data.slmcVerified+" :Slmc verification status")
         })
     })
     // $(document).ready(function(){
@@ -50,11 +51,39 @@ export class DoctorverificationComponent implements OnInit {
     })
   }
   sendEmail(){
-    this.mailFlag = true;
-    this.verify.sendEmail(this.user.uid,this.data).subscribe(res=>{
+    // $(document).ready(function(){
+    //   $("#slmcok").click(function(){
+    //     $("#slmcok_div").fadeOut();
+    //   });
+    // });
+
+    // this.mailFlag = true;
+    // this.verify.sendEmail(this.user.uid,this.data).subscribe(res=>{
+    //   console.log(res)
+    // })
+    // this.hide();
+
+    var otpCode           = '';
+    length = 30;
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      otpCode += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    // console.log(otpCode)
+    this.verify.sendEmail(this.user.uid,[otpCode,this.user.email]).subscribe(res=>{
       console.log(res)
     })
   }
+  
+  // hide(){
+  //   console.log("Jq called")
+  //   $(document).ready(function(){
+  //     $("#slmcok").click(function(){
+  //       $("#slmcok_div").fadeOut();
+  //     })
+  //   })
+  // }
 
   onSubmit(otp){
     // if(this.data.OTP === )
