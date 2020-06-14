@@ -78,7 +78,7 @@ def sendEmail():
     password = 'qchaos@123'
     receiver_email = email
     OTP = data[0]
-    url = "http://127.0.0.1:4200/emailverify?key="+uid+"&secret="+OTP
+    url = "http://localhost:4200//emailverify?key="+uid+"&secret="+OTP
     print(url)
     # args = {"key": uid, "secret": OTP}
      # OTP
@@ -146,10 +146,10 @@ def emailverify():
         # print(type(data))
         otp = data['emailOtp']
         if verifyOtp(code,otp):
-            return sendTextMessage(data['telno'],uid)
+            return jsonify("email verified")
         else:
             status = "Invalid otp"
-            return jsonify(ststus)
+            return jsonify(status)
     else:
         return jsonify('No such document!')
     # user_ref = db.collection(u'Users').document(id)
@@ -160,6 +160,17 @@ def verifyOtp(otp,code):
         return True
     else:
         return False
+
+@app.route('/api/phoneotp',methods=["POST"])
+def updatePhonenumberStatus():
+	data = request.get_json()
+	uid = data[0]
+	phoneOtp = data[1]
+	user_ref = db.collection(u'Users').document(uid)
+	user_ref.update({u'PhoneNumberVerified':False})
+	user_ref.update({u'emailVerified':True})
+	user_ref.update({u'PhoneNumberOtp':phoneOtp})
+	return jsonify(phoneOtp,uid)
 
 
 @app.route('/api/doctor_verification',methods=["POST"])
@@ -206,7 +217,11 @@ def doctor_verification():
         status = "No Doctor data associated with this credintials"
         return updateFlag(email,FullName,uid,False,status)
 
-def sendTextMessage(PhoneNumber,uid):
+@app.route('/api/sendtextmessage',methods=["POST"])
+def sendTextMessage():
+    data = request.get_json()
+    uid = data[0]
+    PhoneNumber = data[1]
     phoneOtp = randint(1000, 99999)
     user_ref = db.collection(u'Users').document(uid)
     user_ref.update({u'PhoneNumberVerified': False})
@@ -224,6 +239,15 @@ def sendTextMessage(PhoneNumber,uid):
         Message = "Your OTP: "+str(phoneOtp)
     )
     return jsonify("Phone Verification sent")
+
+
+@app.route('/api/phoneverify',methods=["POST"])
+def phoneverify():
+	data = request.get_json()
+	return jsonify(data)
+
+
+
 
 def updateFlag(email,name,id,flag,status):
     user_ref = db.collection(u'Users').document(id)

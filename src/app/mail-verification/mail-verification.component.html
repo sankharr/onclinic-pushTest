@@ -1,9 +1,6 @@
 <section class="wrapper">
 
     <div class="container">
-        <h3 class="mt-lg mb-4">
-            <span>Alerts</span>
-        </h3>
         <div *ngFor="let alert of alerts">
             <ngb-alert [type]="alert.type" [dismissible]="true" (close)="close(alert)">
                 <ng-container *ngIf="alert.icon">
@@ -17,105 +14,14 @@
     </div>
 
 
-    <div class="container-fostrap">
-        <div>
-            <img src="https://4.bp.blogspot.com/-7OHSFmygfYQ/VtLSb1xe8kI/AAAAAAAABjI/FxaRp5xW2JQ/s320/logo.png"
-                class="fostrap-logo" />
-            <h1 class="heading">
-                Verification Progress
-            </h1>
-        </div>
-        <div class="content">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-4">
-                        <div class="card">
-                            <a class="img-card">
-                                <!-- <img src="https://cdn.pixabay.com/photo/2014/05/18/18/34/icon-347234_960_720.png" /> -->
-                                <img src="https://cdn.pixabay.com/photo/2018/03/22/02/37/email-3249062_960_720.png">
-                            </a>
-                            <div class="card-content">
-                                <h4 class="card-title">
-                                    <a>Email Verification Process!</a>
-                                </h4>
-                                <!-- <p>
-                                    
-                                </p> -->
-                            </div>
-                            <div class="card-read-more">
-                                <a class="btn btn-link btn-block">
-                                    Verified!
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-4">
-                        <div class="card">
-                            <a class="img-card">
-                                <img src="https://cdn.pixabay.com/photo/2016/11/30/18/14/chat-1873536_960_720.png" />
-                            </a>
-                            <div class="card-content">
-                                <h4 class="card-title">
-                                    <a>Phone Number Verification
-                                    </a>
-                                </h4>
-                            </div>
-                            <div class="card-read-more" *ngIf="flag">
-                                <button class="btn btn-link btn-block" (click)="changeFlag()">
-                                    Send
-                                </button>
-                                <a class="btn btn-link btn-block">
-                                    Send
-                                </a>
-                            </div>
-                            <div *ngIf="!flag" class="card-read-more">
-                                <input type="text" class="btn btn-link btn-block" placeholder="Enter">
-                            </div>
-                        </div>
-                        <!-- <div class="flip-card">
-                            <div class="flip-card-inner">
-                              <div class="flip-card-front">
-                                <img src="https://cdn.pixabay.com/photo/2016/11/30/18/14/chat-1873536_960_720.png" alt="Avatar" style="width:300px;height:300px;">
-                                <div class="card-content">
-                                </div>
-                                <div>
-                                    <p>Please Verify Your Phone Number</p>
-                                </div>
-                              </div>
-                              <div class="flip-card-back">
-                                <h1>John Doe</h1>
-                                <p>Architect & Engineer</p>
-                                <p>We love that guy</p>
-                              </div>
-                       
-                            </div>
-                          </div> -->
-                    </div>
-                    <div class="col-xs-12 col-sm-4">
-                        <div class="card">
-                            <a class="img-card">
-                                <!-- <img src="https://cdn.pixabay.com/photo/2016/01/10/22/52/letters-1132703_960_720.png" /> -->
-                                <img
-                                    src="https://cdn.pixabay.com/photo/2019/07/06/16/31/city-map-4320755_960_720.png" />
-                            </a>
-                            <div class="card-content">
-                                <h4 class="card-title">
-                                    <a> Address Verification Process
-                                    </a>
-                                </h4>
-                                <!-- <p class="">
-                                    tutorials button hover animation, although very much a hover button is very beauti...
-                                </p> -->
-                            </div>
-                            <div class="card-read-more">
-                                <a class="btn btn-link btn-block">
-                                    Verify
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <img *ngIf=flsg src="assets/svg/sendmessage.svg" alt="">
+    <div class="container">
+        <div class="col md-7">
+            <a class="btn btn-primary" (click)="[phoneOtp()]">Send Phone Otp</a>
         </div>
     </div>
 </section>
+<img src="assets/svg/locaton.svg" alt="">
+<div class="col md-7">
+    <a class="btn btn-primary" (click)="[phoneVerify()]">Verify Phone</a>
+</div>
