@@ -4,10 +4,23 @@ Created on Tue May  5 20:24:21 2020
 
 @author: Ransaka
 """
+import time
+import datetime
+import os
+from reportlab.pdfgen import canvas 
+import random, string
+from reportlab.lib.enums import TA_JUSTIFY
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+
+# import firebase_admin
+# from firebase_admin import credentials, firestore, storage
 
 # 
-import firebase_admin
-from firebase_admin import credentials, firestore, storage
+# import firebase_admin
+# from firebase_admin import credentials, firestore, storage
 
 # 
 import smtplib, ssl
@@ -32,7 +45,7 @@ import boto3
 from firebase import firebase
 import firebase_admin
 from firebase_admin import credentials
-from firebase_admin import firestore
+from firebase_admin import firestore, storage
 
 
 with open('api.csv', newline='') as f:
@@ -41,7 +54,7 @@ with open('api.csv', newline='') as f:
     data = fresh_data.copy()
 
 cred   = credentials.Certificate('firebase-sdk.json')
-firebase_admin.initialize_app(cred)
+firebase_admin.initialize_app(cred,{'storageBucket': 'onclinic-dd11a.appspot.com'})
 db = firestore.client()
 
 #print(data.values())
@@ -132,6 +145,10 @@ def disease():
     symptoms = symptoms.split(',')
     return jsonify(symptoms)
 
+'''
+when user clicks a link he/she will navigate into site and it will automatically
+verify  user email
+'''
 @app.route('/api/emailverify',methods=["POST"])
 def emailverify():
     data = request.get_json()
@@ -161,6 +178,9 @@ def verifyOtp(otp,code):
     else:
         return False
 
+'''
+When user email succssfuly confirmed we send phone otp and update status
+'''
 @app.route('/api/phoneotp',methods=["POST"])
 def updatePhonenumberStatus():
 	data = request.get_json()
@@ -172,7 +192,82 @@ def updatePhonenumberStatus():
 	user_ref.update({u'PhoneNumberOtp':phoneOtp})
 	return jsonify(phoneOtp,uid)
 
+@app.route('/api/address',methods=["POST"])
+def pdf_gen():
+	data = request.get_json()
+	x = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(32))
+	code = str(x)[0:5]
+	fileName = str(x)+".pdf"
+	doc = SimpleDocTemplate(fileName,pagesize=letter,
+	                        rightMargin=72,leftMargin=72,
+	                        topMargin=72,bottomMargin=18)
+	Story=[]
+	logo = "python.png"
 
+	formatted_time = time.ctime()
+	full_name = data[0]
+	address_parts = ["29/3A,Second Lane", "Purana Road, Wattegedara, Maharagama"]
+
+	im = Image(logo, 3*inch, 2*inch)
+	Story.append(im)
+
+	styles=getSampleStyleSheet()
+	styles.add(ParagraphStyle(name='Justify', alignment=TA_JUSTIFY))
+	ptext = '<font size="12">%s</font>' % formatted_time
+
+	Story.append(Paragraph(ptext, styles["Normal"]))
+	Story.append(Spacer(1, 12))
+
+	# Create return address
+	ptext = '<font size="12">%s</font>' % full_name
+	Story.append(Paragraph(ptext, styles["Normal"]))       
+	for part in address_parts:
+	    ptext = '<font size="12">%s</font>' % part.strip()
+	    Story.append(Paragraph(ptext, styles["Normal"]))   
+
+	Story.append(Spacer(1, 12))
+	ptext = '<font size="12">Dear %s:</font>' % full_name.split()[0].strip()
+	Story.append(Paragraph(ptext, styles["Normal"]))
+	Story.append(Spacer(1, 12))
+
+	ptext = '<font size="12">We would like to welcome you to Onclinic Platform. As you already know Onclinic is the\
+	        Best platform for Online channeling and Doctor booking. This is your final part of registration. All u want to do is\
+	        Add verification code in web browser</font>'
+	Story.append(Paragraph(ptext, styles["Justify"]))
+	Story.append(Spacer(1, 12))
+
+
+	ptext = '<font size="12">Here is your Verification Code: %s</font>' %(code)
+	Story.append(Paragraph(ptext, styles["Justify"]))
+	Story.append(Spacer(1, 15))
+
+	ptext = '<font size="12">Thank you very much and we look forward to serving you.</font>'
+	Story.append(Paragraph(ptext, styles["Justify"]))
+	Story.append(Spacer(1, 12))
+	ptext = '<font size="12">Sincerely,</font>'
+	Story.append(Paragraph(ptext, styles["Normal"]))
+	Story.append(Spacer(1, 48))
+	ptext = '<font size="12">Ran Sucker</font>'
+	Story.append(Paragraph(ptext, styles["Normal"]))
+	Story.append(Spacer(1, 12))
+	doc.build(Story)
+
+	# cred = credentials.Certificate("./onclinic-dd11a-firebase-adminsdk-g3ixz-639c96122f.json")
+	# firebase_admin.initialize_app(cred, {'storageBucket': 'onclinic-dd11a.appspot.com'})
+	db = firestore.client()
+	bucket = storage.bucket()
+	blob = bucket.blob(fileName)
+	outfile=fileName
+	blob.upload_from_filename(outfile)
+	pdf_url = blob.generate_signed_url(datetime.timedelta(days=300), method='GET')
+	print(pdf_url)
+	os.remove(fileName)
+	print(fileName)
+	return jsonify(pdf_url)
+
+'''
+verify doctor using slmc site
+'''
 @app.route('/api/doctor_verification',methods=["POST"])
 def doctor_verification():
     data = request.get_json()
@@ -217,6 +312,10 @@ def doctor_verification():
         status = "No Doctor data associated with this credintials"
         return updateFlag(email,FullName,uid,False,status)
 
+'''
+send otp into user phone
+'''
+
 @app.route('/api/sendtextmessage',methods=["POST"])
 def sendTextMessage():
     data = request.get_json()
@@ -241,11 +340,39 @@ def sendTextMessage():
     return jsonify("Phone Verification sent")
 
 
-@app.route('/api/phoneverify',methods=["POST"])
-def phoneverify():
-	data = request.get_json()
-	return jsonify(data)
+# @app.route('/api/phoneverify',methods=["POST"])
+# def phoneverify():
+# 	data = request.get_json()
+# 	print(data)
+# 	uid = data[0]
+# 	otp = data[1]
+# 	doc_ref = db.collection(u'Users').document(uid)
+# 	doc = doc_ref.get()
+# 	if doc.exists:
+# 		data = doc.to_dict()
 
+# 	return jsonify(data)
+
+'''
+    data = request.get_json()
+    print(data)
+    uid = str(data[0])
+    code = data[1]
+    doc_ref = db.collection(u'Users').document(uid)
+    doc = doc_ref.get()
+    # print(doc.to_dict)
+    if doc.exists:
+        data = ((doc.to_dict()))
+        # print(type(data))
+        otp = data['emailOtp']
+        if verifyOtp(code,otp):
+            return jsonify("email verified")
+        else:
+            status = "Invalid otp"
+            return jsonify(status)
+    else:
+        return jsonify('No such document!')
+'''
 
 
 

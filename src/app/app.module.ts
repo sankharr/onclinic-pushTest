@@ -41,6 +41,7 @@ import { DoctorverificationComponent } from './doctorverification/doctorverifica
 import { DashboardComponent } from './doctor/dashboard/dashboard.component';
 import { PatientDashboardComponent } from './patient/patient-dashboard/patient-dashboard.component';
 import { MailVerificationComponent } from './mail-verification/mail-verification.component';
+import { AddressVerifyComponent } from './address-verify/address-verify.component';
 // import { FirebaseListObservable } from '@angular/fire/database';
 
 
@@ -74,7 +75,8 @@ var firebaseConfig = {
     DoctorverificationComponent,
     DashboardComponent,
     PatientDashboardComponent,
-    MailVerificationComponent
+    MailVerificationComponent,
+    AddressVerifyComponent
   ],
   imports: [
     BrowserModule,

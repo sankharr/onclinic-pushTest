@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Router, ActivatedRouteSnapshot, Params, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRouteSnapshot, Params, ActivatedRoute, RouterLinkActive } from '@angular/router';
 import { VerifydoctorService } from '../services/verifydoctor.service';
 import * as $ from 'jquery';
 import { CoreAuthService } from '../core/core-auth.service';
@@ -30,7 +30,9 @@ export class MailVerificationComponent implements OnInit {
   flsg: false;
   // flag: true;
 
-  constructor(private _router: ActivatedRoute,
+  constructor(
+    private router: Router,
+    private _router: ActivatedRoute,
     private doctorService: VerifydoctorService,
     private coreAuth: CoreAuthService,
     private db: AngularFirestore) {
@@ -52,39 +54,53 @@ export class MailVerificationComponent implements OnInit {
     this.coreAuth.getUserState()    //getting the user data for the homepage
       .subscribe(user => {
         this.user = user;
-        this.contunue(id, this.user.uid,code);
-      });
-    
+        // console.log(this.user)
+        var docRef = this.db.collection("Users").doc(this.user.uid);
+        docRef.valueChanges()
+          .subscribe(result => {
+            this.data = result;
+            console.log(result)
+          })
+      })
+
   }
 
   close(alert: IAlert) {
     this.alerts.splice(this.alerts.indexOf(alert), 1);
   }
 
-  contunue(id, uid,code) {
+  contunue(id, uid, code) {
     // if (id == uid) {
     //   console.log('Same user!')
     // }
     // else{
     //   console.log('Differ user')
     // }
-    this.verifyEmail(uid,code)
+    this.verifyEmail(uid, code)
   }
-  verifyEmail(id,code){
+  verifyEmail(id, code) {
     console.log('verify')
-    this.doctorService.verifyEmail(id,code).subscribe(res=>{
+    this.doctorService.verifyEmail(id, code).subscribe(res => {
       console.log(res)
     })
   }
-  phoneVerify(){
-    var otp = 46005
-    this.doctorService.verifyphone(this.user.uid,otp).subscribe(res=>{
-      console.log(res+"phone")
-    })
+  // phoneVerify(){
+  //   var otp = 731892
+  //   this.doctorService.verifyphone(this.user.uid,otp).subscribe(res=>{
+  //     console.log(res+"phone")
+  //   })
+  // }
+
+  phoneVerify() {
+    // var otp = 731892
+    // if(otp==)
+    this.router.navigate(['/addressverificatoin'])
   }
-  phoneOtp(){
+
+
+  phoneOtp() {
     var otp = Math.floor(100000 + Math.random() * 900000)
-    this.doctorService.sendPhoneOtp(this.user.uid,otp).subscribe(res=>{
+    this.doctorService.sendPhoneOtp(this.user.uid, otp).subscribe(res => {
       console.log(res)
     })
   }

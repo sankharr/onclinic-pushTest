@@ -19,6 +19,7 @@ import { TestingComponent } from './testing/testing.component';
 import { DoctorsComponent } from './layouts/doctors/doctors.component';
 import { MlComponent } from './ml/ml.component';
 import { DiseaseComponent } from './disease/disease.component';
+import {AddressVerifyComponent} from './address-verify/address-verify.component'
 import { PatientDashboardComponent } from './patient/patient-dashboard/patient-dashboard.component';
 
 const routes: Routes = [
@@ -38,6 +39,7 @@ const routes: Routes = [
   { path: 'doctordashboard',component:DashboardComponent},
   { path: 'patientdashboard',component:PatientDashboardComponent},
   { path: 'emailverify',component:MailVerificationComponent},
+  {path: 'addressverificatoin',component:AddressVerifyComponent},
   { path: '', redirectTo: 'homepage', pathMatch: 'full' }
 ];
 
