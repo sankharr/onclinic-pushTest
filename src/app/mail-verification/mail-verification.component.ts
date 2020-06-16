@@ -59,14 +59,12 @@ export class MailVerificationComponent implements OnInit {
         docRef.valueChanges()
           .subscribe(result => {
             this.data = result;
-            console.log(result)
+            console.log(result);
+            // console.log(user.PhoneNumberVerified+"PhoneNumberVerified ")
+            this.contunue(id,user.uid,code)
           })
       })
 
-  }
-
-  close(alert: IAlert) {
-    this.alerts.splice(this.alerts.indexOf(alert), 1);
   }
 
   contunue(id, uid, code) {
@@ -93,7 +91,8 @@ export class MailVerificationComponent implements OnInit {
 
   phoneVerify() {
     // var otp = 731892
-    // if(otp==)
+    // if(otp==) 
+    this.doctorService.verifyphone(this.user.uid,true)
     this.router.navigate(['/addressverificatoin'])
   }
 

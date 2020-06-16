@@ -12,6 +12,7 @@ import {DashboardComponent} from './doctor/dashboard/dashboard.component';
 import { LandingComponent } from './landing/landing.component';
 import { LoginComponent } from './login/login.component';
 import { HomepageComponent } from './homepage/homepage.component';
+import {WelcomeComponent} from './welcome/welcome.component'
 import { PatientsComponent } from './layouts/patients/patients.component';
 import { AuthGuard } from './services/auth.guard';
 import { ModeratorComponent } from './moderator/moderator.component';
@@ -40,6 +41,7 @@ const routes: Routes = [
   { path: 'patientdashboard',component:PatientDashboardComponent},
   { path: 'emailverify',component:MailVerificationComponent},
   {path: 'addressverificatoin',component:AddressVerifyComponent},
+  {path: 'welcomepage',component:WelcomeComponent},
   { path: '', redirectTo: 'homepage', pathMatch: 'full' }
 ];
 
