@@ -196,7 +196,6 @@ def updatePhonenumberStatus():
 def pdf_gen():
 	data = request.get_json()
 	x = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(32))
-	code = str(x)[0:5]
 	fileName = str(x)+".pdf"
 	doc = SimpleDocTemplate(fileName,pagesize=letter,
 	                        rightMargin=72,leftMargin=72,
@@ -206,7 +205,9 @@ def pdf_gen():
 
 	formatted_time = time.ctime()
 	full_name = data[0]
-	address_parts = ["29/3A,Second Lane", "Purana Road, Wattegedara, Maharagama"]
+	code = data[1]
+	uid = data[3]
+	address_parts = data[2]
 
 	im = Image(logo, 3*inch, 2*inch)
 	Story.append(im)
@@ -263,7 +264,9 @@ def pdf_gen():
 	print(pdf_url)
 	os.remove(fileName)
 	print(fileName)
-	return jsonify(pdf_url)
+	return address_ststus(uid,pdf_url)
+
+
 
 '''
 verify doctor using slmc site
@@ -388,16 +391,21 @@ def addOTP(id,OTP):
     user_ref.update({u'emailVerified':False})
     return jsonify(OTP,True)
 
-def uploadFIle():
-    cred = credentials.Certificate("./onclinic-dd11a-firebase-adminsdk-g3ixz-639c96122f.json")
-    firebase_admin.initialize_app(cred, {
-    'storageBucket': 'onclinic-dd11a.appspot.com'
-    })
-    db = firestore.client()
-    bucket = storage.bucket()
-    blob = bucket.blob('file.pdf')
-    outfile='./file.pdf'
-    blob.upload_from_filename(outfile)
+def address_ststus(id,url):
+    user_ref = db.collection(u'Users').document(id)
+    user_ref.update({u'report_url':url})
+    return jsonify(url)
+
+# def uploadFIle():
+#     cred = credentials.Certificate("./onclinic-dd11a-firebase-adminsdk-g3ixz-639c96122f.json")
+#     firebase_admin.initialize_app(cred, {
+#     'storageBucket': 'onclinic-dd11a.appspot.com'
+#     })
+#     db = firestore.client()
+#     bucket = storage.bucket()
+#     blob = bucket.blob('file.pdf')
+#     outfile='./file.pdf'
+#     blob.upload_from_filename(outfile)
 
 
 
